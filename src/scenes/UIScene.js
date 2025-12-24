@@ -1,7 +1,7 @@
 // src/scenes/UIScene.js
 import { Inventory } from '../systems/Inventory.js';
-import { InventoryButton } from '../ui/InventoryButton.js';
-import { DialogueBox } from '../ui/DialogueBox.js';
+import { InventoryButton } from '../UI/InventoryButton.js';
+import { DialogueBox } from '../UI/DialogueBox.js';
 
 export class UIScene extends Phaser.Scene {
     constructor() {
