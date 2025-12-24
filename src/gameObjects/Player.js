@@ -1,67 +1,55 @@
-export class Player extends Phaser.Physics.Arcade.Sprite
-{
-    constructor(scene, x, y)
-    {
-        super(scene, x, y, 'girl');
+export class Player extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y) {
+        super(scene, x, y, 'lily');
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
+        
         this.initAnimations();
     }
 
-    initAnimations ()
-    {
+    initAnimations() {
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('girl', {start: 1, end: 4}),
+            frames: this.anims.generateFrameNumbers('lily', { start: 1, end: 4 }),
             frameRate: 5,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [ {key: 'girl', frame: 0}],
+            frames: [{ key: 'lily', frame: 0 }],
             frameRate: 1,
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('girl', {start: 1, end: 4}),
+            frames: this.anims.generateFrameNumbers('lily', { start: 1, end: 4 }),
             frameRate: 5,
             repeat: -1
         });
     }
 
-    moveLeft ()
-    {
+    moveLeft() {
         this.setVelocityX(-100);
-
         this.anims.play('left', true);
-
         this.setFlipX(true);
     }
 
-    moveRight ()
-    {
+    moveRight() {
         this.setVelocityX(100);
-
         this.anims.play('right', true);
-
         this.setFlipX(false);
     }
 
-    idle ()
-    {
+    idle() {
         this.setVelocityX(0);
-
-        this.anims.play('turn');
+        this.anims.play('turn', true);
     }
 
-    jump ()
-    {
-        if (this.body.blocked.down)
-        {
+    jump() {
+        if (this.body.blocked.down) {
             this.setVelocityY(-500);
         }
     }

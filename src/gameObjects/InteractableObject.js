@@ -1,25 +1,27 @@
-// src/gameObjects/InteractableObject.js
 export class InteractableObject extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, requiredItemId, defaultMessage = "Isso não funciona.") {
+    constructor(scene, x, y, texture, requiredItemId, defaultMessage, onSolveCallback) {
         super(scene, x, y, texture);
+        
         this.scene = scene;
         this.requiredItemId = requiredItemId;
         this.defaultMessage = defaultMessage;
-        
+        this.onSolveCallback = onSolveCallback; 
         this.isSolved = false;
 
         scene.add.existing(this);
         this.setInteractive({ useHandCursor: true });
-
         this.on('pointerdown', this.handleInteraction, this);
     }
 
     handleInteraction() {
-        if (this.isSolved) {
-            return;
-        }
+        if (this.isSolved) return;
 
         const uiScene = this.scene.scene.get('UIScene');
+
+        if (!uiScene || !uiScene.inventory) {
+            console.warn('UIScene ou Inventário não encontrados!');
+            return;
+        }
 
         const inventory = uiScene.inventory;
         const selectedItem = inventory.selectedItem;
@@ -33,10 +35,9 @@ export class InteractableObject extends Phaser.GameObjects.Sprite {
 
     onSuccess(inventory) {
         inventory.consumeSelectedItem();
-        
         this.isSolved = true;
 
-        if (this.onSolveCallback) {
+        if (typeof this.onSolveCallback === 'function') {
             this.onSolveCallback();
         } else {
             this.scene.events.emit('showDialogue', "Funcionou!");
@@ -46,16 +47,16 @@ export class InteractableObject extends Phaser.GameObjects.Sprite {
     }
 
     onFail() {
-        console.log("teste"); // Debug
-        
         this.scene.events.emit('showDialogue', this.defaultMessage);
         
-        this.scene.tweens.add({
-            targets: this,
-            x: this.x + 5,
-            duration: 50,
-            yoyo: true,
-            repeat: 3
-        });
+        if (this.scene) {
+            this.scene.tweens.add({
+                targets: this,
+                x: this.x + 5,
+                duration: 50,
+                yoyo: true,
+                repeat: 3
+            });
+        }
     }
 }

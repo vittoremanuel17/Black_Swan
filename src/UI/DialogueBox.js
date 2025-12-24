@@ -27,6 +27,7 @@ export class DialogueBox extends Phaser.GameObjects.Container {
         this.portrait = this.scene.add.image(PADDING, HEIGHT / 2, 'face_player');
         this.portrait.setOrigin(0, 0.5); 
         this.portrait.setVisible(false);
+        this.portrait.setScale(4); 
         this.add(this.portrait);
 
         this.bitmapText = this.scene.add.bitmapText(PADDING, PADDING, 'pixelFont', '', FONT_SIZE);
@@ -79,7 +80,7 @@ export class DialogueBox extends Phaser.GameObjects.Container {
         this.bitmapText.setText('');
     }
 
-     startTypewriter() {
+    startTypewriter() {
         this.isTyping = true;
         let currentIndex = 0;
 
@@ -91,7 +92,7 @@ export class DialogueBox extends Phaser.GameObjects.Container {
                 this.bitmapText.setText(this.fullText.substring(0, currentIndex + 1));
                 currentIndex++;
 
-                if (currentIndex === this.fullText.length) {
+                if (currentIndex >= this.fullText.length) {
                     this.isTyping = false;
                     this.timerEvent.remove();
                 }
@@ -129,8 +130,26 @@ export class DialogueBox extends Phaser.GameObjects.Container {
 
     hide() {
         this.setVisible(false);
-        this.scene.events.emit('dialogueFinished');
-
         this.cleanupInput();
+
+        const level2 = this.scene.scene.get('Level2');
+        if (level2 && level2.scene.isActive()) {
+            console.log("Avisando Level2 que o diálogo acabou.");
+            level2.events.emit('dialogueFinished');
+        }
+
+        // --- A CORREÇÃO ESTÁ AQUI ---
+        
+        // 1. Tenta pegar a referência da cena do JOGO
+        const gameScene = this.scene.scene.get('Game');
+
+        if (gameScene) {
+            console.log("Avisando GameScene que o diálogo acabou..."); // Debug
+            
+            // 2. Emite o evento NA CENA DO JOGO
+            gameScene.events.emit('dialogueFinished'); 
+        } else {
+            console.error("ERRO: Não consegui encontrar a cena 'Game' para avisar.");
+        }
     }
 }

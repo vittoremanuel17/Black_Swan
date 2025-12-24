@@ -11,8 +11,8 @@ export class Item extends Phaser.GameObjects.Sprite {
     }
 
     collectItem() {
+        this.scene.sound.play('plim', { volume: 0.2 });
         this.scene.events.emit('itemCollected', this.id, this.itemData);
         this.destroy();
     }
-
 }

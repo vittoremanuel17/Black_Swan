@@ -1,4 +1,3 @@
-// src/systems/Inventory.js
 import { INVENTORY_CONFIG } from '../config.js';
 
 export class Inventory extends Phaser.GameObjects.Container {
@@ -100,10 +99,8 @@ export class Inventory extends Phaser.GameObjects.Container {
             this.items.push(availableSlot.item);
             
             return true;
-        } else {
-            console.log('Inventário cheio!');
-            return false; 
         }
+        return false; 
     }
 
     removeItem(itemId) {
@@ -117,7 +114,6 @@ export class Inventory extends Phaser.GameObjects.Container {
                 slot.occupied = false;
                 slot.item = null;
                 removedItem.icon.destroy();
-                
                 this.saveToRegistry();
             }
         }
@@ -135,9 +131,7 @@ export class Inventory extends Phaser.GameObjects.Container {
 
         this.deselectItem();
         this.selectedItem = { id: itemId, icon: iconSprite };
-        
         iconSprite.setTint(0x00ff00); 
-        console.log(`Item selecionado: ${itemId}`);
     }
 
     deselectItem() {
@@ -159,7 +153,6 @@ export class Inventory extends Phaser.GameObjects.Container {
             id: item.id,
             data: item.data
         }));
-
         this.scene.registry.set('playerInventory', dataToSave);
     }
 }
